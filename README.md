@@ -4,6 +4,8 @@
 
 ![MIT License][license-shield] ![Quality](https://www.code-inspector.com/project/27388/score/svg) ![Grade](https://www.code-inspector.com/project/27388/status/svg) ![example workflow](https://github.com/robusgauli/cdict.h/actions/workflows/test.yml/badge.svg)
 
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
+
 
 ### Key Features
 * Extremely fast non-cryptographic hash algorithm [XXHash](https://cyan4973.github.io/xxHash/)
