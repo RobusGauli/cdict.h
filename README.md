@@ -63,211 +63,221 @@ int main() {
 
 
 ### APIs
-* `cdict__add(cdict, key, value)`: no return
-Add key/value pair to dictionary.
-    ```
-    #include "cdict.h"
 
-    CDict(int, char) cdict_int_char_t;
+* `cdict__add(cdict, key, value)`: *no return* <br />
 
-    int main() {
-      cdict_int_char_t cdict;
-      cdict__init(&cdict);
+Add key/value pair to dictionary
+<br />
 
-      // Add key/val pair to dictionary
-      cdict__add(&cdict, 1, '1');
-      cdict__add(&cdict, 2, '2');
-      cdict__add(&cdict, 3, '3');
+```c
+#include "cdict.h"
 
-      // Free up the heap allocated resource
-      cdict__free(&cdict);
-    }
+CDict(int, char) cdict_int_char_t;
 
-    ```
+int main() {
+  cdict_int_char_t cdict;
+  cdict__init(&cdict);
 
-* `cdict__remove(cdict, key)`: returns `bool` (`true` if removed from the dictionary)
+  // Add key/val pair to dictionary
+  cdict__add(&cdict, 1, '1');
+  cdict__add(&cdict, 2, '2');
+  cdict__add(&cdict, 3, '3');
 
-Removes key/value pair from the dictionary given key as an argument.
+  // Free up the heap allocated resource
+  cdict__free(&cdict);
+}
+```
 
-    ```c
-    #include "cdict.h"
-    #include <assert.h>
+* `cdict__remove(cdict, key)`: *returns bool* <br />
 
-    typedef char* string_t;
 
-    CDict(string_t, string_t) cdict_string_string_t;
-    int main() {
-      cdict_string_string_t cdict;
-      cdict__init(&cdict);
+Removes key/value pair from the dictionary given key as an argument. Returns `true` if successfully removed from the dictionary. <br/>
 
-      cdict__add(&cdict, "firstname", "alan");
-      cdict__add(&cdict, "lastname", "turing");
+```c
+#include "cdict.h"
+#include <assert.h>
 
-      // Remove key/value pair by `key`
-      {
-        bool ok = cdict__remove(&cdict, "firstname");
-        assert(ok);
-      }
+typedef char* string_t;
 
-      // Try removing with wrong key
-      {
-        bool ok = cdict__remove(&cdict, "blaaaaaaaaaah");
-        assert(!ok);
-      }
+CDict(string_t, string_t) cdict_string_string_t;
+int main() {
+  cdict_string_string_t cdict;
+  cdict__init(&cdict);
 
-      cdict__free(&cdict);
+  cdict__add(&cdict, "firstname", "alan");
+  cdict__add(&cdict, "lastname", "turing");
 
-    }
-    ```
+  // Remove key/value pair by `key`
+  {
+    bool ok = cdict__remove(&cdict, "firstname");
+    assert(ok);
+  }
+
+  // Try removing with wrong key
+  {
+    bool ok = cdict__remove(&cdict, "blaaaaaaaaaah");
+    assert(!ok);
+  }
+
+  cdict__free(&cdict);
+}
+```
 
 * `cdict__size(cdict)`: *returns `size_t`*
 
 Returns the size of dictionary.
 
-    ```c
-    #include "cdict.h"
-    #include <assert.h>
+```c
+#include "cdict.h"
+#include <assert.h>
 
-    CDict(int, int) cdict_int_int_t;
+CDict(int, int) cdict_int_int_t;
 
-    int main() {
-      cdict_int_int_t cdict;
-      cdict__init(&cdict);
+int main() {
+  cdict_int_int_t cdict;
+  cdict__init(&cdict);
 
-      cdict__add(&cdict, 1, 12);
-      cdict__add(&cdict, 2, 12);
-      cdict__add(&cdict, 3, 24);
+  cdict__add(&cdict, 1, 12);
+  cdict__add(&cdict, 2, 12);
+  cdict__add(&cdict, 3, 24);
 
-      size_t size = cdict__size(&cdict);
-      printf("Size of Dictionary: %ld\n", size);
+  // Size of the dictionary
+  size_t size = cdict__size(&cdict);
+  printf("Size of Dictionary: %ld\n", size);
 
-      cdict__free(&cdict);
-    }
-    ```
+  cdict__free(&cdict);
+}
+```
+
 
 * `cdict__clear(cdict)`: *no return*
 Removes all the key/value pairs from the dictionary.
-    ```c
-    #include <asser.h>
-    #include "cdict.h"
 
-    typedef char* string;
-    CDict(string, int) cdict_string_int_t;
+```c
+#include <assert.h>
+#include "cdict.h"
 
-    int main() {
-      cdict_string_int_t cdict;
-      cdict__init(&cdict);
+typedef char* string;
+CDict(string, int) cdict_string_int_t;
 
-      cdict__add(&cdict, "one", 1);
-      cdict__add(&cdict, "two", 2);
-      cdict__add(&cdict, "three", 3);
+int main() {
+  cdict_string_int_t cdict;
+  cdict__init(&cdict);
 
-      // Clear dictionary
-      cset__clear(&cdict);
-      assert(cdict__size(&cdict) == 0);
+  cdict__add(&cdict, "one", 1);
+  cdict__add(&cdict, "two", 2);
+  cdict__add(&cdict, "three", 3);
 
-      cdict__free(&cdict)
-    }
-    ```
+  // Clear dictionary
+  cset__clear(&cdict);
+  assert(cdict__size(&cdict) == 0);
 
-* `cdict__contains(cdict, key)`: returns `bool` (`True` if key exists)
+  cdict__free(&cdict)
+}
+```
+
+* `cdict__contains(cdict, key)`: *returns `bool`* <br/>
+
 Test whether an key is in dictionary.
-    ```c
-    #include <assert.h>
-    #include "cset.h"
+```c
+#include <assert.h>
+#include "cdict.h"
 
-    Cset(int) cset_int_t;
+CDict(int, double) cdict_int_double_t;
 
-    int main() {
-      cset_int_t cset_int;
-      cset__init(&cset_int);
+int main() {
+  cdict_int_double_t cdict;
+  cdict__init(&cdict);
 
-      cset__add(&cset_int, 34);
-      cset__add(&cset_int, 25);
-      cset__add(&cset_int, 56);
+  cdict__add(&cdict, 1, 1.1);
+  cdict__add(&cdict, 2, 2.2);
 
-      // Positive membership test
-      bool contains = false;
-      cset__contains(&cset_int, 34, &contains);
-      assert(contains == true);
+  {
+    // Positive membership test
+    bool ok = cdict__contains(&cdict, 1);
+    assert(ok);
+  }
 
-      // Negative membershi test
-      cset__contains(&cset_int, 100, &contains);
-      assert(contains == false);
+  {
+    // Negative membership test
+    bool ok = cdict__contains(&cdict, 4123);
+    assert(!ok);
+  }
 
-      cset__free(&cset_int);
-    }
-    ```
-* `cset__set_comparator` & `cset__set_hash()`: *no return*
+  cdict__free(&cdict);
+}
+```
+* `cdict__set_comparator` & `cdict__set_hash()`: *no return* <br/>
 
    **NOTE:** Both **Custom Comparator and Hash** must be implemented.
 
     These above methods allows us to use custom hashing and comparator for complex structs. Please go through this [link](https://stackoverflow.com/questions/2265503/why-do-i-need-to-override-the-equals-and-hashcode-methods-in-java) for why we need to implement both functions for correctness.
 
-    ```c
-    #include <assert.h>
-    #include "cset.h"
+```c
+#include <assert.h>
+#include "cdict.h"
 
-    typedef struct {
-      int x;
-      int y;
-    } Node;
+typedef struct {
+  int x;
+  int y;
+} Node;
 
-    // Custom comparator
-    bool custom_comparator(Node* self, Node* other) {
-      return (self -> x) == (other -> x);
-    }
-    // Custom hash function
-    // It takes pointer to Node and function as an arguments
-    cset__u64 custom_hash(Node* self, cset__u64 (*hash)(void*, size_t)) {
-      // VVIP: Hash function requires pointer to data and the size in bytes
-      return hash(&(self -> x), sizeof(self -> x));
-    }
+// Custom comparator
+bool custom_comparator(Node* self, Node* other) {
+  return (self -> x) == (other -> x);
+}
+// Custom hash function
+// It takes pointer to Node and function as an arguments
+cdict__u64 custom_hash(Node* self, cdict__u64 (*hash)(void*, size_t)) {
+  // VVIP: Hash function requires pointer to data and the size in bytes
+  return hash(&(self -> x), sizeof(self -> x));
+}
 
-    Cset(Node) cset_node_t;
+CDict(Node, int) cdict_node_t;
 
-    int main() {
-      cset_node_t cset_node;
-      cset__init(&cset_node);
-      cset__set_hash(&cset_node, custom_hash);
-      cset__set_comparator(&cset_node, custom_comparator);
+int main() {
+  cdict_node_t cdict_node;
+  cdict__init(&cdict_node);
+  cdict__set_hash(&cdict_node, custom_hash);
+  cdict__set_comparator(&cdict_node, custom_comparator);
 
-      cset__add(&cset_node, ((Node){.x=4,.y=5}));
-      // Duplicate because our custom comparator and hash uses `x`
-      // instead of whole struct for hash
-      cset__add(&cset_node, ((Node){.x=4,.y=4}));
+  cdict__add(&cdict_node, ((Node){.x=4,.y=5}), 1);
+  // Duplicate because our custom comparator and hash uses `x`
+  // instead of whole struct for hash
+  cdict__add(&cdict_node, ((Node){.x=4,.y=4}), 234);
 
-      assert(cset__size(&cset_node) == 1);
+  assert(cdict__size(&cdict_node) == 1);
 
-      cset__add(&cset_node, ((Node){.x=1, .y=2}));
-      assert(cset__size(&cset_node) == 2);
+  cdict__add(&cdict_node, ((Node){.x=1, .y=2}), 12);
+  assert(cdict__size(&cdict_node) == 2);
 
-      // Removed because our comparator uses `x` i.e 1 which already exists
-      cset__remove(&cset_node, ((Node){.x=1, .y=45}));
-      assert(cset__size(&cset_node) == 1);
+  // Removed because our comparator uses `x` i.e 1 which already exists
+  bool ok = cdict__remove(&cdict__node, ((Node){.x=1, .y=45}));
+  assert(ok);
+  assert(cdict__size(&cdict__node) == 1);
 
-      cset__free(&cset_node);
-    }
-    ```
+  cdict__free(&cdict_node);
+}
+```
 
-* `cset__free`: *no return*
+* `cdict__free`: *no return* <br/>
 Frees up heap allocation
 
-    ```c
-    #include "cset.h"
+```c
+#include "cdict.h"
 
-    Cset(int) cset_int_t;
+CDict(int, int) cdict_t;
 
-    int main() {
-      cset_int_t cset_int;
-      cset__init(&cset_int);
+int main() {
+  cdict_t cdict;
+  cdict__init(&cdict);
 
-      cset__add(&cset_int, 34);
+  cdict__add(&cdict, 1, 2);
 
-      // Free up the memory
-      cset__free(&cset_int);
-    }
-    ```
+  // Free up heap mem
+  cdict__free(&cdict);
+}
+```
 
 ### APIS for Iteration
 
