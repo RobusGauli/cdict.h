@@ -39,24 +39,27 @@ int main() {
     cdict__add(&cdict_int, 2, 200);
     cdict__add(&cdict_int, 2, 300); // Duplicate
 
+    // Size
     size_t size = cdict__size(&cdict_int);
     printf("Size of dictionary is: %ld\n", size);
 
-    // Iteration
-    cdict_iterator_int_t cdict_iterator_int;
-
-    // Initialize iterator with cdict_int;
-    cdict_iterator__init(&cdict_iterator_int, &cdict_int);
-
-    // Traverse
-    for(;;) {
-      if (cdict_iterator__done(&cdict_iterator_int)) break;
-
-      int key = cdict_iterator__next(&cdict_iterator_int);
-
-      printf("Got key: %d\n", key);
+    // Get element
+    int value;
+    bool ok =  cdict__get(&cdict_int, 1, &value);
+    if (ok) {
+      printf("Key is : %d & Value is: %d\n", 1, value);
     }
 
+    // Remove element
+    bool removed = cdict__remove(&cdict_int, 1);
+    if (removed) {
+      printf("Removed key/value pair whose key is: %d\n", 1);
+    }
+
+    // Clear
+    cdict__clear(&cdict_int);
+
+    // Free
     cdict__free(&cdict_int);
 }
 ```
@@ -88,7 +91,7 @@ int main() {
 }
 ```
 
-* `cdict__get(cdict, key, buffer)`: *returns bool* <br/>
+* `cdict__get(cdict, key, buffer)`: *returns `bool`* <br/>
 
 Get value for a corresponding key from dictionary
 
@@ -121,7 +124,7 @@ int main() {
 }
 
 ```
-* `cdict__remove(cdict, key)`: *returns bool* <br />
+* `cdict__remove(cdict, key)`: *returns `bool`* <br />
 
 
 Removes key/value pair from the dictionary given key as an argument. Returns `true` if successfully removed from the dictionary. <br/>
@@ -183,7 +186,7 @@ int main() {
 ```
 
 
-* `cdict__clear(cdict)`: *no return <br/>
+* `cdict__clear(cdict)`: *no return* <br/>
 Removes all the key/value pairs from the dictionary.
 
 ```c
