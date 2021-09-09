@@ -1,0 +1,10 @@
+
+{
+  "name": "cset",
+  "repo": "robusgauli/cset",
+  "description": "Typesafe & fastest set implementation in C",
+  "version": "0.0.1",
+  "license": "MIT",
+  "src": ["src/cset.h"],
+  "keywords": ["set", "hashmap", "xxhash", "hashing", "hashset", "generic", "typesafe"]
+}

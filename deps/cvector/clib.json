@@ -1,0 +1,9 @@
+{
+  "name": "cvector",
+  "repo": "robusgauli/cvector",
+  "description": "Generic vector implementation with iterator helpers in C",
+  "version": "0.1.7",
+  "license": "MIT",
+  "src": ["src/cvector.h"],
+  "keywords": ["vector", "array", "list", "utils", "buffer", "generic"]
+}
