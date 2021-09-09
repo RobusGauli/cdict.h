@@ -1,0 +1,6 @@
+test
+*.out
+*.o
+tags
+
+deps/

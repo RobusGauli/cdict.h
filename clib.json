@@ -1,0 +1,10 @@
+
+{
+  "name": "cdict.h",
+  "repo": "robusgauli/cdict.h",
+  "description": "Typesafe & fastest Hashmap implementation in C",
+  "version": "0.0.1",
+  "license": "MIT",
+  "src": ["src/cdict.h"],
+  "keywords": ["hashmap", "xxhash", "hashing", "dictionary", "generic", "typesafe"]
+}
