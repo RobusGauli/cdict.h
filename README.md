@@ -1,6 +1,6 @@
 
 # CDict(T)
-### Typesafe, Generic, and Extremely Fast Dictionary/Hashmap implementation in C 🚀
+### Typesafe, Generic, and Extremely Fast Dictionary in C 🚀
 
 
 ### Key Features
@@ -88,6 +88,39 @@ int main() {
 }
 ```
 
+* `cdict__get(cdict, key, buffer)`: *returns bool* <br/>
+
+Get value for a corresponding key from dictionary
+
+```c
+#include "cdict.h"
+
+typedef char* string;
+CDict(string, string) cdict_string_t;
+
+int main() {
+  cdict_string_t cdict_string;
+  cdict__init(&cdict_string);
+
+  cdict__add(&cdict_string, "firstname", "Alan");
+  cdict__add(&cdict_string, "lastname", "Turing");
+
+  string firstname;
+  bool ok =  cdict__get(&cdict_string, "firstname", &firstname);
+  if (ok) {
+    printf("Firstname is: %s\n", firstname);
+  }
+
+  string middlename;
+  bool found = cdict__get(&cdict_string, "middlename", &middlename);
+  if (!found) {
+    printf("Could not find `middlename` as a key in dictionary.\n");
+  }
+
+  cdict__free(&cdict_string);
+}
+
+```
 * `cdict__remove(cdict, key)`: *returns bool* <br />
 
 
@@ -150,7 +183,7 @@ int main() {
 ```
 
 
-* `cdict__clear(cdict)`: *no return*
+* `cdict__clear(cdict)`: *no return <br/>
 Removes all the key/value pairs from the dictionary.
 
 ```c
@@ -261,6 +294,7 @@ int main() {
 ```
 
 * `cdict__free`: *no return* <br/>
+
 Frees up heap allocation
 
 ```c
@@ -281,174 +315,92 @@ int main() {
 
 ### APIS for Iteration
 
-* `Cset_iterator(type)`
-    Creates Iterator type definition for a given cset type.
+* `CDict_iterator(type)` <br />
 
-* `cset_iterator__init(iter, cset)`: *no return*
-    Initializes iterator `iter` with `cset`.
-  ```c
-  #include "cset.h"
+Creates Iterator type definition for a given cdict type.
 
-  Cset(int) cset_int_t;
-  // 1. Define iterator type for `cset_int_t`
-  Cset_iterator(cset_int_t) cset_iterator_int_t;
+* `cdict_iterator__init(iter, cdict)`: *no return* <br/>
 
-  int main() {
-    cset_int_t cset_int;
-    cset__init(&cset_int);
+Initializes iterator `iter` with `cdict`.
 
-    cset_iterator_int_t cset_int_iterator;
-    // 2. Initialize iterator with `cset_int`
-    cset_iterator__init(&cset_int_iterator, &cset_int);
+```c
+#include "cdict.h"
+
+CDict(int, int) cdict_int_t;
+// 1. Define iterator type for `cdict_int_t`
+CDict_iterator(cdict_int_t) cdict_iterator_t;
+
+int main() {
+  cdict_int_t cdict_int;
+  cdict__init(&cdict_int);
+
+  cdict_iterator_t cdict_iterator;
+  // 2. Initialize iterator with `cdict_int`
+  cdict_iterator__init(&cdict_iterator, &cdict_int);
+}
+```
+
+* `cdict_iterator__done(iter)`: *returns `bool`* <br/>
+
+Returns whether the iteration is complete or not.
+
+```c
+#include <assert.h>
+#include "cdict.h"
+
+CDict(int, int) cdict_int_t;
+CDict_iterator(cdict_int_t) cdict_iterator_t;
+
+int main() {
+  cdict_int_t cdict;
+  cdict__init(&cdict);
+
+  cdict__add(&cdict, 2, 4);
+  cdict__add(&cdict, 3, 9);
+  cdict__add(&cdict, 4, 16);
+
+  cdict_iterator_t cdict_iterator;
+  cdict_iterator__init(&cdict_iterator, &cdict);
+
+  // Checks whether the iteration is complete or not
+  bool done = cset_iterator__done(&cdict_iterator);
+  assert(done == false);
+}
+```
+
+* `cset__next(iter, buffer)`: *no return* <br />
+
+Yields next key from the iterator.
+
+```c
+#include <assert.h>
+#include "cdict.h"
+
+
+CDict(int, int) cdict_int_t;
+CDict_iterator(cdict_int_t) cdict_iterator_t;
+
+int main() {
+  cdict_int_t cdict_int;
+  cdict__init(&cdict_int);
+
+  cdict__add(&cdict_int, 2, 4);
+  cdict__add(&cdict_int, 3, 9);
+  cdict__add(&cdict_int, 4, 16);
+
+  cdict_iterator_t cdict_iterator;
+  cdict_iterator__init(&cdict_iterator, &cdict_int);
+
+  for (;;) {
+    if (cdict_iterator__done(&cdict_iterator)) break;
+
+    int key = cdict_iterator__next(&cdict_iterator);
+
+    printf("Got key: %d\n", key);
   }
-  ```
-
-* `cset__done(iter)`: *returns `bool`*
-    Returns whether the iteration is complete or not.
-  ```c
-  #include <assert.h>
-  #include "cset.h"
-
-  Cset(int) cset_int_t;
-  Cset_iterator(cset_int_t) cset_iterator_int_t;
-
-  int main() {
-    cset_int_t cset_int;
-    cset__init(&cset_int);
-
-    cset__add(&cset_int, 34);
-    cset__add(&cset_int, 56);
-
-    cset_iterator_int_t cset_int_iterator;
-    cset_iterator__init(&cset_int_iterator, &cset_int);
-
-    // Checks whether the iteration is complete or not
-    bool done = cset_iterator__done(&cset_int_iterator);
-    assert(done == false);
-  }
-  ```
-
-* `cset__next(iter, buffer)`: *no return*
-
-    Yields pointer to next element into buffer. Note: buffer must be pointer type.
-
-  ```c
-  #include <assert.h>
-  #include "cset.h"
-
-
-  Cset(int) cset_int_t;
-  Cset_iterator(cset_int_t) cset_iterator_int_t;
-
-  int main() {
-    cset_int_t cset_int;
-    cset__init(&cset_int);
-
-    cset__add(&cset_int, 34);
-    cset__add(&cset_int, 56);
-
-    cset_iterator_int_t cset_int_iterator;
-    cset_iterator__init(&cset_int_iterator, &cset_int);
-
-    for (;;) {
-      if (cset_iterator__done(&cset_int_iterator)) break;
-
-      // Yields pointer to next element into buffer
-      int* buffer;
-      cset_iterator__next(&cset_int_iterator, buffer);
-
-      printf("Got: %d\n", *buffer);
-    }
-
-    cset__free(&cset_int);
-  }
-  ```
-
-### APIS for basic set operations
-
-* `cset__intersection(result, a, b)`: *no return*
-Puts the intersection of two sets `a` and `b` in `result`.
-
-  ```c
-  #include <assert.h>
-  #include "cset.h"
-
-  Cset(int) cset_int_t;
-
-  int main() {
-    cset_int_t cset_int_a;
-    cset_int_t cset_int_b;
-
-    cset__init(&cset_int_a);
-    cset__init(&cset_int_b);
-
-    // Add elements to cset_int_a
-    cset__add(&cset_int_a, 12);
-    cset__add(&cset_int_a, 13);
-    cset__add(&cset_int_a, 14);
-
-    // Add elements to cset_int_b
-    cset__add(&cset_int_b, 12);
-    cset__add(&cset_int_b, 13);
-    cset__add(&cset_int_b, 16);
-
-    cset_int_t result;
-    cset__init(&result);
-
-    // Perform intersection between cset_int_a and cset_int_b
-    cset__intersect(&result, &cset_int_a, &cset_int_b);
-
-    assert(cset__size(&result) == 2);
-
-    cset__free(&cset_int_a);
-    cset__free(&cset_int_b);
-    cset__free(&result);
-  }
-  ```
-
-* `cset__union(result, a, b)`: *no return*
-Puts all the elements that are in either set into `result`
-
-  ```c
-  #include <assert.h>
-  #include "cset.h"
-
-  Cset(int) cset_int_t;
-  Cset_iterator(cset_int_t) cset_iterator_int_t;
-
-  int main() {
-    cset_int_t cset_int_a;
-    cset_int_t cset_int_b;
-    cset_int_t cset_result;
-
-    cset__init(&cset_int_a);
-    cset__init(&cset_int_b);
-    cset__init(&cset_result);
-
-    cset__add(&cset_int_a, 34);
-    cset__add(&cset_int_a, 25);
-    cset__add(&cset_int_a, 12);
-
-    cset__add(&cset_int_b, 1);
-    cset__add(&cset_int_b, 4);
-    cset__add(&cset_int_b, 34);
-
-    // Perform union between `cset_int_a` and `cset_int_b`
-    cset__union(&cset_result, &cset_int_a, &cset_int_b);
-
-    // Size of the `cset_result` set must be 5 with elements { 34, 25, 12, 1, 4 }
-    assert(cset__size(&cset_result) == 5);
-
-    cset__add(&cset_int_b, 100);
-    cset__union(&cset_result, &cset_int_a, &cset_int_b);
-    // Size of the `cset_result` set must be 6 as we added new elements to `cset_int_b`
-    assert(cset__size(&cset_result) == 6);
-
-    cset__free(&cset_int_a);
-    cset__free(&cset_int_b);
-    cset__free(&cset_result);
-  }
-  ```
+  cdict__free(&cdict_int)
+}
+```
 
 ### License
 
