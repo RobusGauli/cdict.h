@@ -370,7 +370,7 @@ int main() {
   cdict_iterator__init(&cdict_iterator, &cdict);
 
   // Checks whether the iteration is complete or not
-  bool done = cset_iterator__done(&cdict_iterator);
+  bool done = cdict_iterator__done(&cdict_iterator);
   assert(done == false);
 }
 ```
@@ -405,7 +405,7 @@ int main() {
 
     printf("Got key: %d\n", key);
   }
-  cdict__free(&cdict_int)
+  cdict__free(&cdict_int);
 }
 ```
 
