@@ -480,8 +480,8 @@ static cdict__u64 cdict__hash2_callback(void *memptr, size_t size) {
       ? (((cdict__hash(cdict)))((ref), cdict__hash1_callback))                 \
       : (cdict__XXH64((ref), sizeof(key), (cdict__seed(cdict))))
 
-#define cdict__double_hash_index(ha1, ha2, i, cap)                             \
-  (((ha1) + ((i) * (ha2))) % (cap))
+// NOTE: & works instead of % because cap is power of 2 i.e mod(cap , 2) = 0
+#define cdict__double_hash_index(ha1, ha2, i, cap) (((ha1) + ((i) * (ha2))) & (cap-1))
 
 #define cdict__add(cdict, key, val)                                            \
   do {                                                                         \
